@@ -62,7 +62,8 @@ def test_latest_versions(mock_session):
     header = ('Ссылка на документацию', 'Версия', 'Статус')
     answer = [
         ('Ссылка на документацию', 'Версия', 'Статус'),
-        ('https://docs.python.org/3.11/', '3.11', 'in development'),
+        ('https://docs.python.org/3.12/', '3.12', 'in development'),
+        ('https://docs.python.org/3.11/', '3.11', 'pre-release'),
         ('https://docs.python.org/3.10/', '3.10', 'stable'),
         ('https://docs.python.org/3.9/', '3.9', 'stable'),
         ('https://docs.python.org/3.8/', '3.8', 'security-fixes'),
