@@ -12,11 +12,16 @@ from outputs import control_output
 from utils import get_response, find_tag
 
 
+WHATS_NEW_HEADER = ('Ссылка на статью', 'Заголовок', 'Редактор, Автор')
+LATEST_VERSIONS_HEADER = ('Ссылка на документацию', 'Версия', 'Статус')
+PEP_HEADER = ('Статус', 'Количество')
+
+
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     response = get_response(session, whats_new_url)
     if response is None:
-        return
+        return None
     soup = BeautifulSoup(response.text, features='lxml')
     main_div = find_tag(soup, 'section', {'id': 'what-s-new-in-python'})
     div_with_ul = find_tag(main_div, 'div', {'class': 'toctree-wrapper'})
@@ -24,7 +29,7 @@ def whats_new(session):
         'li',
         attrs={'class': 'toctree-l1'}
     )
-    results = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
+    results = [WHATS_NEW_HEADER]
     for section in tqdm(sections_by_python):
         version_a_tag = find_tag(section, 'a')
         href = version_a_tag['href']
@@ -52,7 +57,7 @@ def latest_versions(session):
             break
         else:
             raise Exception('Not found')
-    results = [('Ссылка на документацию', 'Версия', 'Статус')]
+    results = [LATEST_VERSIONS_HEADER]
     pattern = r'Python (?P<version>\d\.\d+) \((?P<status>.*)\)'
     for a_tag in a_tags:
         link = a_tag['href']
@@ -117,7 +122,7 @@ def pep(session):
                  f'Ожидаемые статусы: {EXPECTED_STATUS[stat_on_table]}')
             )
     results = list(status_counts.items())
-    results.insert(0, ('Статус', 'Количество'))
+    results.insert(0, PEP_HEADER)
     total_amount = sum(status_counts.values())
     results.append(('Total', total_amount))
     return results
