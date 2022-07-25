@@ -9,7 +9,7 @@ from tqdm import tqdm
 from configs import configure_argument_parser, configure_logging
 from constants import BASE_DIR, MAIN_DOC_URL, PEP_DOC_URL, EXPECTED_STATUS
 from outputs import control_output
-from utils import get_response, find_tag
+from utils import get_response, find_tag, find_tag_by_string
 
 
 WHATS_NEW_HEADER = ('Ссылка на статью', 'Заголовок', 'Редактор, Автор')
@@ -108,7 +108,8 @@ def pep(session):
         soup = BeautifulSoup(response.text, features='lxml')
         section = find_tag(soup, 'section', attrs={'id': 'pep-content'})
         table_info = find_tag(section, 'dl')
-        status_header_tag = find_tag(table_info, 'dt', string='Status')
+        status_header_tag = find_tag_by_string(
+            table_info, 'dt', string='Status')
         status_on_page = status_header_tag.find_next_sibling().text
         if status_counts.get(status_on_page, 0) == 0:
             status_counts[status_on_page] = 1
